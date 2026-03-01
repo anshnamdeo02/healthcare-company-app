@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+}
+
+model Patient {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name              String
+  age               Int
+  gender            String
+  mobile            String
+  email             String   @unique
+  address           String
+  emergencyContact  String
+  aadhaarEncrypted  String
+  password          String
+  medicalRecords    Json     @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("patients")
+}
+
+model Doctor {
+  id                 String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String
+  age                Int
+  gender             String
+  email              String         @unique
+  specialization     String
+  registrationNumber String         @unique
+  registrationState  String
+  hospital           String
+  experience         Int
+  patientsTreated    Int
+  photoUrl           String?
+  certificateUrl     String?
+  password           String
+  approvalStatus     ApprovalStatus @default(PENDING)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@map("doctors")
+}
+
+model Admin {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  @@map("admins")
+}
