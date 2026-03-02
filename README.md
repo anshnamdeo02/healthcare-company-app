@@ -201,3 +201,18 @@ Copy `server/.env.example` to `server/.env` and fill in:
 ## API Documentation
 
 See [API_DOCS.md](./API_DOCS.md) for complete API reference.
+
+## Deployment
+
+This app can be deployed for **free** using:
+- **Frontend**: Vercel (never sleeps, fast CDN)
+- **Backend**: Render (free tier)
+- **Database**: Neon PostgreSQL (free 3GB)
+
+📖 **See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete step-by-step deployment guide**
+
+Quick links:
+- [Vercel](https://vercel.com) - Frontend hosting
+- [Render](https://render.com) - Backend hosting
+- [Neon](https://neon.tech) - PostgreSQL database
+
