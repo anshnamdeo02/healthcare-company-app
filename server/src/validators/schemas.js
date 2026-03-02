@@ -71,6 +71,29 @@ const adminLoginSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
+const createConsultationSchema = z.object({
+  symptoms: z.string().min(5, 'Please describe your symptoms (at least 5 characters)').max(2000),
+  duration: z.string().max(100).optional(),
+});
+
+const assignConsultationSchema = z.object({
+  doctorId: z.string().uuid('Invalid doctor ID'),
+  meetLink: z.string().url('Invalid Google Meet link').optional().or(z.literal('')),
+  scheduledAt: z.coerce.date().optional(),
+});
+
+const addPrescriptionSchema = z.object({
+  medicines: z.array(
+    z.object({
+      name: z.string().min(1, 'Medicine name is required'),
+      dosage: z.string().min(1, 'Dosage is required'),
+      frequency: z.string().min(1, 'Frequency is required'),
+      duration: z.string().min(1, 'Duration is required'),
+    })
+  ).min(1, 'At least one medicine is required'),
+  notes: z.string().max(1000).optional(),
+});
+
 module.exports = {
   patientSignupSchema,
   patientLoginSchema,
@@ -79,4 +102,7 @@ module.exports = {
   doctorSignupSchema,
   doctorLoginSchema,
   adminLoginSchema,
+  createConsultationSchema,
+  assignConsultationSchema,
+  addPrescriptionSchema,
 };

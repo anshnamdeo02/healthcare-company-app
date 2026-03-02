@@ -12,20 +12,28 @@ enum ApprovalStatus {
   APPROVED
 }
 
+enum ConsultationStatus {
+  PENDING
+  ASSIGNED
+  SCHEDULED
+  COMPLETED
+}
+
 model Patient {
-  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name              String
   age               Int
   gender            String
   mobile            String
-  email             String   @unique
+  email             String         @unique
   address           String
   emergencyContact  String
   aadhaarEncrypted  String
   password          String
-  medicalRecords    Json     @default("{}")
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  medicalRecords    Json           @default("{}")
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  consultations     Consultation[]
 
   @@map("patients")
 }
@@ -48,6 +56,7 @@ model Doctor {
   approvalStatus     ApprovalStatus @default(PENDING)
   createdAt          DateTime       @default(now())
   updatedAt          DateTime       @updatedAt
+  consultations      Consultation[]
 
   @@map("doctors")
 }
@@ -59,4 +68,37 @@ model Admin {
   createdAt DateTime @default(now())
 
   @@map("admins")
+}
+
+model Consultation {
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId    String             @db.Uuid
+  doctorId     String?            @db.Uuid
+  symptoms     String
+  duration     String?
+  status       ConsultationStatus @default(PENDING)
+  meetLink     String?
+  scheduledAt  DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  patient      Patient            @relation(fields: [patientId], references: [id])
+  doctor       Doctor?            @relation(fields: [doctorId], references: [id])
+  prescription Prescription?
+
+  @@index([patientId])
+  @@index([doctorId])
+  @@map("consultations")
+}
+
+model Prescription {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  consultationId String       @unique @db.Uuid
+  medicines      Json
+  notes          String?
+  createdAt      DateTime     @default(now())
+
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+
+  @@map("prescriptions")
 }
